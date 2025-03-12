@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mood-Based Playlist Generator</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Spotify-inspired dark theme with Montserrat font */
+    body {
+      background-color: #191414;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      background-color: #282828;
+      padding: 40px;
+      border-radius: 10px;
+      margin: 50px auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+    }
+    h1 {
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1DB954;
+    }
+    .intro {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #b3b3b3;
+    }
+    .welcome-card {
+      background-color: #121212;
+      border: 1px solid #333333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+      text-align: center;
+      color: #b3b3b3;
+    }
+    .form-label {
+      color: #b3b3b3;
+    }
+    .form-control {
+      background-color: #121212;
+      color: #ffffff;
+      border: 1px solid #333333;
+    }
+    .form-control:focus {
+      background-color: #121212;
+      color: #ffffff;
+      border-color: #1DB954;
+      box-shadow: none;
+    }
+    .btn-primary {
+      background-color: #1DB954;
+      border-color: #1DB954;
+      font-size: 1.1rem;
+    }
+    .btn-primary:hover {
+      background-color: #17a44d;
+      border-color: #17a44d;
+    }
+    .detected-mood {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      color: #1DB954;
+    }
+    .playlist {
+      margin-top: 30px;
+    }
+    .playlist-card {
+      background-color: #121212;
+      border: 1px solid #333333;
+      border-radius: 8px;
+      margin-bottom: 8px;  /* Closer spacing between cards */
+      padding: 15px;
+      transition: transform 0.2s;
+    }
+    .playlist-card:hover {
+      transform: scale(1.02);
+    }
+    .playlist-card a {
+      color: #1DB954;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .playlist-card a:hover {
+      text-decoration: underline;
+    }
+    .song-info {
+      color: #b3b3b3;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mood-Based Playlist Generator</h1>
+    <div class="intro">
+      Let your mood guide you. Enter your mood description and keywords below,
+      and we'll curate a personalized playlist just for you.
+    </div>
+    <form method="post">
+      <div class="mb-3">
+        <label for="mood_description" class="form-label">Mood Description & Keywords:</label>
+        <input type="text" class="form-control" id="mood_description" name="mood_description" required placeholder="E.g. I'm feeling happy and energetic, ready to dance">
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Generate Playlist</button>
+    </form>
+    
+    {% if mood %}
+      <div class="detected-mood mt-4">
+        Detected Mood: {{ mood }}
+      </div>
+    {% endif %}
+    
+    {% if playlist is not none %}
+      <div class="playlist">
+        <h3 class="mb-3">Your Playlist:</h3>
+        {% for index, row in playlist.iterrows() %}
+          <div class="playlist-card">
+            <a href="https://open.spotify.com/track/{{ row['id'] }}" target="_blank">
+              {{ row['name'] }}
+            </a>
+            <div class="song-info">
+              by {{ row['artists'] }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="welcome-card">
+        <h2>Welcome!</h2>
+        <p>Enter your mood description above and hit "Generate Playlist" to get started.</p>
+      </div>
+    {% endif %}
+  </div>
+  
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
