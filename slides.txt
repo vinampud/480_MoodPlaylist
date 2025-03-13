@@ -1,0 +1,10 @@
+- demo with UI
+- tech stack, inputs & outputs, rouge testing, user experience
+- challenges 
+
+2d maze game
+- scope of game
+- pathfinding algorithms, dynamic path updates, 2 diff agent strategies
+- demo of mazes being built
+- key system placement and game logix
+- performance and testing results
