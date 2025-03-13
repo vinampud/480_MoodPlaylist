@@ -31,8 +31,10 @@ def analyze_sentiment_intricate(text):
         return 'excited'
     elif compound >= 0.3:
         return 'happy'
-    elif compound > -0.3:
+    elif compound > -0.1:
         return 'neutral'
+    elif compound > -0.35:
+        return 'off'
     elif compound > -0.6:
         return 'melancholic'
     elif compound > -0.8:
@@ -110,3 +112,4 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
