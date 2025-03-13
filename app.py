@@ -53,7 +53,7 @@ def filter_by_mood(dataframe, mood):
         mean_valence = dataframe['valence'].mean()
         if mood in ['ecstatic', 'excited', 'happy']:
             return dataframe[dataframe['valence'] >= mean_valence]
-        elif mood in ['melancholic', 'sad', 'depressed']:
+        elif mood in ['off', 'melancholic', 'sad', 'depressed']:
             return dataframe[dataframe['valence'] < mean_valence]
     return dataframe
 
