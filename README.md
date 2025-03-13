@@ -3,7 +3,7 @@
 Clone this repository:
 
 ```
-git clone https://github.com/your-repo/mood-playlist.git
+git clone [https://github.com/vinampud/480_MoodPlaylist.git](https://github.com/vinampud/480_MoodPlaylist.git)
 cd mood-playlist
 ```
 Create a virtual environment and activate it:
