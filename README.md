@@ -4,7 +4,6 @@ Clone this repository:
 
 ```
 git clone https://github.com/vinampud/480_MoodPlaylist.git
-cd mood-playlist
 ```
 Create a virtual environment and activate it:
 ```
