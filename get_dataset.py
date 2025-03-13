@@ -1,26 +1,32 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+import kagglehub
+import json
+import os
 from textblob import TextBlob
 
-# Spotify credentials
-SPOTIPY_CLIENT_ID = '5788ee2c162e49f18dfb1a782f299918'
-SPOTIPY_CLIENT_SECRET = 'b29d2f0a542d4c778f36308f704b3162'
+# Download dataset
+dataset_path = kagglehub.dataset_download("himanshuwagh/spotify-million")
+print(dataset_path)
 
-# Authentication
-auth_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
-sp = spotipy.Spotify(auth_manager=auth_manager)
-weezer = sp.search(q='weezer', limit=2)
-print(weezer['tracks'][0])
-results = sp.recommendations(
-    seed_genres=sp.recommendation_genre_seeds(),
-    limit=15
-)
+# Define the slice file to use
+slice_file = os.path.join(dataset_path, "data/mpd.slice.0-999.json")
+print(slice_file)
 
-print(results)
+# # Load JSON data
+with open(slice_file, "r", encoding="utf-8") as file:
+    data = json.load(file)
 
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-from textblob import TextBlob
+# Extract playlists
+playlists = data["playlists"]
+
+# Display an example playlist
+print(json.dumps(playlists[0], indent=2))
+
+print(data.keys())  # Should show ['info', 'playlists']
+print(playlists[0].keys())  # Shows available fields for each playlist
+
+def find_playlists_by_keyword(keyword, playlists):
+    """Search playlists by keyword in title."""
+    return [pl for pl in playlists if keyword.lower() in pl["name"].lower()]
 
 
 def get_sentiment(text):
@@ -33,44 +39,20 @@ def get_sentiment(text):
         return "sad"
     else:
         return "neutral"
+    
+def recommend_playlist(user_input, playlists):
+    mood = get_sentiment(user_input)
+    matched_playlists = find_playlists_by_keyword(mood, playlists)
+    
+    if matched_playlists:
+        chosen_playlist = matched_playlists[0]  # Select the first match
+        print(f"Recommended Playlist: {chosen_playlist['name']}")
+        for track in chosen_playlist["tracks"][:10]:  # Show top 10 tracks
+            print(f"{track['artist_name']} - {track['track_name']}")
+    else:
+        print("No matching playlist found.")
 
-def get_spotify_recommendations(mood):
-    """Fetch songs from Spotify based on mood using audio features."""
-    
-    mood_params = {
-        "happy": {"valence": 0.8, "energy": 0.7, "danceability": 0.6},
-        "sad": {"valence": 0.2, "energy": 0.3, "danceability": 0.3},
-        "neutral": {"valence": 0.5, "energy": 0.5, "danceability": 0.5}
-    }
-    
-    params = mood_params.get(mood, {"valence": 0.5, "energy": 0.5, "danceability": 0.5})  # Default to neutral
-    
-    # Map mood to genres
-    mood_genres = {
-        "happy": ["pop", "dance", "electronic"],
-        "sad": ["classical", "acoustic", "folk"],
-        "neutral": ["jazz", "blues", "hip_hop"]
-    }
-    
-    seed_genres = mood_genres.get(mood, ["pop", "rock"])
-    
-    results = sp.recommendations(
-        seed_genres=seed_genres,
-        target_valence=params["valence"],
-        target_energy=params["energy"],
-        target_danceability=params["danceability"],
-        limit=15
-    )
-    
-    # Print recommended tracks
-    print(f"🎶 Recommended songs for mood '{mood}':")
-    for track in results["tracks"]:
-        print(f"- {track['name']} by {', '.join(artist['name'] for artist in track['artists'])}")
 
 if __name__ == "__main__":
     user_input = input("Enter your mood description: ")
-    mood = get_sentiment(user_input)
-    
-    print(f"Detected Mood: {mood}")
-    
-    get_spotify_recommendations(mood)
+    recommend_playlist(user_input, playlists)
