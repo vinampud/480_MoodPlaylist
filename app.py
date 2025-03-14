@@ -3,15 +3,12 @@ import pandas as pd
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# Download the VADER lexicon if needed
 nltk.download('vader_lexicon')
 
 app = Flask(__name__)
 
-# Load the dataset
 df = pd.read_csv('data.csv')
 
-# Initialize the VADER sentiment analyzer
 analyzer = SentimentIntensityAnalyzer()
 
 def analyze_sentiment_intricate(text):
@@ -21,7 +18,6 @@ def analyze_sentiment_intricate(text):
     """
     if not isinstance(text, str):
         text = ""
-    # Remove non-ASCII characters
     text = text.encode('ascii', errors='ignore').decode('ascii')
     scores = analyzer.polarity_scores(text)
     compound = scores['compound']
@@ -96,18 +92,12 @@ def home():
     detected_mood = None
     if request.method == 'POST':
         user_input = request.form['mood_description']
-        # Analyze sentiment to determine the mood category
         detected_mood = analyze_sentiment_intricate(user_input)
-        # Filter by mood using the 'valence' column
         filtered_df = filter_by_mood(df, detected_mood)
-        # Further filter using keywords
         filtered_df = filter_by_keywords(filtered_df, user_input)
-        # Fallback: if no songs match, use the full dataset
         if filtered_df.empty:
             filtered_df = df
-        # Generate the playlist with 50 songs
         playlist = generate_playlist(filtered_df, num_songs=50)
-    # On a GET request, playlist and detected_mood remain None
     return render_template('index.html', playlist=playlist, mood=detected_mood)
 
 if __name__ == '__main__':
